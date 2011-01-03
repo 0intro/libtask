@@ -123,6 +123,7 @@ taskalloc(void (*fn)(void*), void *arg, uint stack)
 	 * function that takes some number of word-sized variables,
 	 * and on 64-bit machines pointers are bigger than words.
 	 */
+//print("make %p\n", t);
 	z = (ulong)t;
 	y = z;
 	z >>= 16;	/* hide undefined 32-bit shift from 32-bit compilers */

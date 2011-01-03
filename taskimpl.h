@@ -11,7 +11,7 @@
 
 #define USE_UCONTEXT 1
 
-#if defined(__OpenBSD__)
+#if defined(__OpenBSD__) || defined(__mips__)
 #undef USE_UCONTEXT
 #define USE_UCONTEXT 0
 #endif
@@ -95,6 +95,8 @@ extern	void		makecontext(ucontext_t*, void(*)(), int, ...);
 #	define ucontext_t libthread_ucontext_t
 #	if defined(__i386__)
 #		include "386-ucontext.h"
+#	elif defined(__x86_64__)
+#		include "amd64-ucontext.h"
 #	else
 #		include "power-ucontext.h"
 #	endif	
@@ -122,6 +124,14 @@ extern pid_t rfork_thread(int, void*, int(*)(void*), void*);
 #endif
 
 #if defined(__arm__)
+int getmcontext(mcontext_t*);
+void setmcontext(const mcontext_t*);
+#define	setcontext(u)	setmcontext(&(u)->uc_mcontext)
+#define	getcontext(u)	getmcontext(&(u)->uc_mcontext)
+#endif
+
+#if defined(__mips__)
+#include "mips-ucontext.h"
 int getmcontext(mcontext_t*);
 void setmcontext(const mcontext_t*);
 #define	setcontext(u)	setmcontext(&(u)->uc_mcontext)
