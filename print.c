@@ -103,7 +103,7 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 				{
 					static char digits[] = "0123456789abcdef";
 					char buf[30], *p;
-					int neg, zero;
+					int zero;
 					uvlong luv;
 				
 					if(fl&FlagLongLong){
@@ -126,10 +126,8 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 					}
 				
 					p = buf+sizeof buf;
-					neg = 0;
 					zero = 0;
 					if(!(fl&FlagUnsigned) && (vlong)luv < 0){
-						neg = 1;
 						luv = -luv;
 					}
 					if(luv == 0)
