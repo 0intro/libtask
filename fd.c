@@ -21,7 +21,8 @@ fdtask(void *v)
 	int i, ms;
 	Task *t;
 	uvlong now;
-	
+
+	USED(v);
 	tasksystem();
 	taskname("fdtask");
 	for(;;){

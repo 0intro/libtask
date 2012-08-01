@@ -104,7 +104,7 @@ altqueue(Alt *a)
 static void
 altdequeue(Alt *a)
 {
-	int i;
+	unsigned int i;
 	Altarray *ar;
 
 	ar = chanarray(a->c, a->op);

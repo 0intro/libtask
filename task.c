@@ -319,6 +319,7 @@ taskinfo(int s)
 	Task *t;
 	char *extra;
 
+	USED(s);
 	fprint(2, "task list:\n");
 	for(i=0; i<nalltask; i++){
 		t = alltask[i];
@@ -345,6 +346,7 @@ int mainstacksize;
 static void
 taskmainstart(void *v)
 {
+	USED(v);
 	taskname("taskmain");
 	taskmain(taskargc, taskargv);
 }

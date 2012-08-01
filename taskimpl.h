@@ -9,6 +9,8 @@
 #	endif
 #endif
 
+#define USED(x) if(x){}else{}
+
 #define USE_UCONTEXT 1
 
 #if defined(__OpenBSD__) || defined(__mips__)
