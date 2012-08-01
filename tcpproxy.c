@@ -11,6 +11,8 @@ enum
 	STACK = 32768
 };
 
+static int verbose;
+
 char *server;
 int port;
 void proxytask(void*);
@@ -51,7 +53,8 @@ taskmain(int argc, char **argv)
 	}
 	fdnoblock(fd);
 	while((cfd = netaccept(fd, remote, &rport)) >= 0){
-		fprintf(stderr, "connection from %s:%d\n", remote, rport);
+		if(verbose)
+			fprintf(stderr, "connection from %s:%d\n", remote, rport);
 		taskcreate(proxytask, (void*)(uintptr_t)cfd, STACK);
 	}
 }
@@ -66,8 +69,9 @@ proxytask(void *v)
 		close(fd);
 		return;
 	}
-	
-	fprintf(stderr, "connected to %s:%d\n", server, port);
+
+	if(verbose)
+		fprintf(stderr, "connected to %s:%d\n", server, port);
 
 	taskcreate(rwtask, mkfd2(fd, remotefd), STACK);
 	taskcreate(rwtask, mkfd2(remotefd, fd), STACK);
