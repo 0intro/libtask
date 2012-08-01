@@ -26,6 +26,13 @@
 #endif
 #endif
 
+#define USE_EPOLL 1
+
+#if !defined(__linux)
+#undef USE_EPOLL
+#define USE_EPOLL 0
+#endif
+
 #include <errno.h>
 #include <stdlib.h>
 #include <unistd.h>
