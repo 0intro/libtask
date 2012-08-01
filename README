@@ -131,10 +131,10 @@ int netaccept(int fd, char *server, int *port)
 	Get the next connection that comes in to the listener fd.
 	Returns a fd to use to talk to the guy who just connected.
 	If server is not null, it must point at a buffer of at least
-	16 bytes that is filled in with the remote IP address.
+	46 bytes that is filled in with the remote IP address.
 	If port is not null, it is filled in with the report port.
 	Example:
-		char server[16];
+		char server[46];
 		int port;
 		
 		if(netaccept(fd, server, &port) >= 0)

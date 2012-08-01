@@ -38,7 +38,7 @@ taskmain(int argc, char **argv)
 {
 	int cfd, fd;
 	int rport;
-	char remote[16];
+	char remote[46];
 	
 	if(argc != 4){
 		fprintf(stderr, "usage: tcpproxy localport server remoteport\n");
