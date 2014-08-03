@@ -31,11 +31,12 @@ taskdebug(char *fmt, ...)
 	char *p;
 	static int fd = -1;
 
-return;
+	if(taskdebuglevel == 0)
+		return;
+
 	va_start(arg, fmt);
 	vfprint(1, fmt, arg);
 	va_end(arg);
-return;
 
 	if(fd < 0){
 		p = strrchr(argv0, '/');
@@ -278,6 +279,9 @@ taskname(char *fmt, ...)
 	va_list arg;
 	Task *t;
 
+	if(taskdebuglevel == 0)
+		return;
+
 	t = taskrunning;
 	va_start(arg, fmt);
 	vsnprint(t->name, sizeof t->name, fmt, arg);
@@ -295,6 +299,9 @@ taskstate(char *fmt, ...)
 {
 	va_list arg;
 	Task *t;
+
+	if(taskdebuglevel == 0)
+		return;
 
 	t = taskrunning;
 	va_start(arg, fmt);
