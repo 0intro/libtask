@@ -57,7 +57,7 @@ netannounce(int istcp, char *server, int port)
 		taskstate("socket failed");
 		return -1;
 	}
-	
+
 	/* set reuse flag for tcp */
 	sn = sizeof n;
 	if(istcp && getsockopt(fd, SOL_SOCKET, SO_TYPE, (void*)&n, &sn) >= 0){
@@ -85,7 +85,7 @@ netaccept(int fd, char *server, int *port)
 	int cfd, one;
 	struct sockaddr_storage ss;
 	socklen_t len;
-	
+
 	fdwait(fd, 'r');
 
 	taskstate("netaccept");
@@ -124,7 +124,7 @@ netlookup(char *name, unsigned char *ip)
 
 	if(parseip(ip, name) == 0)
 		return 0;
-	
+
 	/* BUG - Name resolution blocks.  Need a non-blocking DNS. */
 	taskstate("netlookup");
 	if((he = gethostbyname(name)) != 0){
@@ -143,7 +143,7 @@ netlookup(char *name, unsigned char *ip)
 		taskstate("netlookup succeeded");
 		return 0;
 	}
-	
+
 	taskstate("netlookup failed");
 	return -1;
 }
@@ -155,7 +155,7 @@ netdial(int istcp, char *server, int port)
 	unsigned char ip[IPaddrlen];
 	struct sockaddr_storage ss;
 	socklen_t sn;
-	
+
 	if(netlookup(server, ip) < 0)
 		return -1;
 
@@ -172,7 +172,7 @@ netdial(int istcp, char *server, int port)
 		n = 1;
 		setsockopt(fd, SOL_SOCKET, SO_BROADCAST, &n, sizeof n);
 	}
-	
+
 	/* start connecting */
 	memset(&ss, 0, sizeof ss);
 	ss.ss_family = family(ip);
@@ -193,14 +193,14 @@ netdial(int istcp, char *server, int port)
 		return -1;
 	}
 
-	/* wait for finish */	
+	/* wait for finish */
 	fdwait(fd, 'w');
 	sn = sizeof ss;
 	if(getpeername(fd, (struct sockaddr*)&ss, &sn) >= 0){
 		taskstate("connect succeeded");
 		return fd;
 	}
-	
+
 	/* report error */
 	sn = sizeof n;
 	getsockopt(fd, SOL_SOCKET, SO_ERROR, (void*)&n, &sn);

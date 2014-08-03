@@ -143,7 +143,7 @@ taskdelay(uint ms)
 {
 	uvlong when, now;
 	Task *t;
-	
+
 	if(!startedfdtask){
 		startedfdtask = 1;
 #if USE_EPOLL
@@ -166,7 +166,7 @@ taskdelay(uint ms)
 		taskrunning->prev = sleeping.tail;
 		taskrunning->next = nil;
 	}
-	
+
 	t = taskrunning;
 	t->alarmtime = when;
 	if(t->prev)
@@ -246,7 +246,7 @@ fdwait(int fd, int rw)
 		fprint(2, "too many poll file descriptors\n");
 		abort();
 	}
-	
+
 	taskstate("fdwait for %s", rw=='r' ? "read" : rw=='w' ? "write" : "error");
 	bits = 0;
 	switch(rw){
@@ -273,7 +273,7 @@ int
 fdread1(int fd, void *buf, int n)
 {
 	int m;
-	
+
 	do
 		fdwait(fd, 'r');
 	while((m = read(fd, buf, n)) < 0 && errno == EAGAIN);
@@ -284,7 +284,7 @@ int
 fdread(int fd, void *buf, int n)
 {
 	int m;
-	
+
 	while((m=read(fd, buf, n)) < 0 && errno == EAGAIN)
 		fdwait(fd, 'r');
 	return m;
@@ -294,7 +294,7 @@ int
 fdwrite(int fd, void *buf, int n)
 {
 	int m, tot;
-	
+
 	for(tot=0; tot<n; tot+=m){
 		while((m=write(fd, (char*)buf+tot, n-tot)) < 0 && errno == EAGAIN)
 			fdwait(fd, 'w');

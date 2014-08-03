@@ -45,7 +45,7 @@ printstr(char *dst, char *edst, char *s, int size)
 	}
 	return dst+n;
 }
-	
+
 char*
 vseprint(char *dst, char *edst, char *fmt, va_list arg)
 {
@@ -105,7 +105,7 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 					char buf[30], *p;
 					int zero;
 					uvlong luv;
-				
+			
 					if(fl&FlagLongLong){
 						if(fl&FlagUnsigned)
 							luv = va_arg(arg, uvlong);
@@ -124,7 +124,7 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 								luv = va_arg(arg, int);
 						}
 					}
-				
+			
 					p = buf+sizeof buf;
 					zero = 0;
 					if(!(fl&FlagUnsigned) && (vlong)luv < 0){
@@ -157,7 +157,7 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 				case 'r':
 					w = printstr(w, edst, strerror(errno), size*sign);
 					goto break2;
-				default:	
+				default:
 					p = "X*verb*";
 					goto break2;
 				}
@@ -166,7 +166,7 @@ vseprint(char *dst, char *edst, char *fmt, va_list arg)
 			break;
 		}
 	}
-	
+
 	assert(w < edst);
 	*w = 0;
 	return dst;

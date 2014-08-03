@@ -38,7 +38,7 @@ void
 qunlock(QLock *l)
 {
 	Task *ready;
-	
+
 	if(l->owner == 0){
 		fprint(2, "qunlock: owner=0\n");
 		abort();
@@ -119,7 +119,7 @@ void
 wunlock(RWLock *l)
 {
 	Task *t;
-	
+
 	if(l->writer == nil){
 		fprint(2, "wunlock: not locked\n");
 		abort();

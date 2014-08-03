@@ -108,7 +108,7 @@ extern	void		makecontext(ucontext_t*, void(*)(), int, ...);
 #		include "amd64-ucontext.h"
 #	else
 #		include "power-ucontext.h"
-#	endif	
+#	endif
 #endif
 
 #if defined(__OpenBSD__)

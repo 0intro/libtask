@@ -21,7 +21,7 @@ void
 taskmain(int argc, char **argv)
 {
 	int i, n;
-	
+
 	c = chancreate(sizeof(unsigned long), 0);
 
 	n = 0;

@@ -22,7 +22,7 @@ int*
 mkfd2(int fd1, int fd2)
 {
 	int *a;
-	
+
 	a = malloc(2*sizeof a[0]);
 	if(a == 0){
 		fprintf(stderr, "out of memory\n");
@@ -39,7 +39,7 @@ taskmain(int argc, char **argv)
 	int cfd, fd;
 	int rport;
 	char remote[46];
-	
+
 	if(argc != 4){
 		fprintf(stderr, "usage: tcpproxy localport server remoteport\n");
 		taskexitall(1);
@@ -87,7 +87,7 @@ rwtask(void *v)
 	rfd = a[0];
 	wfd = a[1];
 	free(a);
-	
+
 	while((n = fdread(rfd, buf, sizeof buf)) > 0)
 		fdwrite(wfd, buf, n);
 	shutdown(wfd, SHUT_WR);

@@ -19,7 +19,7 @@ void
 taskmain(int argc, char **argv)
 {
 	int i, n;
-	
+
 	if(argc != 4){
 		fprintf(stderr, "usage: httpload n server url\n");
 		taskexitall(1);
@@ -41,7 +41,7 @@ fetchtask(void *v)
 {
 	int fd, n;
 	char buf[512];
-	
+
 	fprintf(stderr, "starting...\n");
 	for(;;){
 		if((fd = netdial(TCP, server, 80)) < 0){

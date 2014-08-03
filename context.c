@@ -43,7 +43,7 @@ makecontext(ucontext_t *ucp, void (*func)(void), int argc, ...)
 	va_list arg;
 
 	tos = (ulong*)ucp->uc_stack.ss_sp+ucp->uc_stack.ss_size/sizeof(ulong);
-	sp = tos - 16;	
+	sp = tos - 16;
 	ucp->mc.pc = (long)func;
 	ucp->mc.sp = (long)sp;
 	va_start(arg, argc);
@@ -98,7 +98,7 @@ makecontext(ucontext_t *uc, void (*fn)(void), int argc, ...)
 {
 	int i, *sp;
 	va_list arg;
-	
+
 	sp = (int*)uc->uc_stack.ss_sp+uc->uc_stack.ss_size/4;
 	va_start(arg, argc);
 	for(i=0; i<4 && i<argc; i++)
@@ -115,7 +115,7 @@ makecontext(ucontext_t *uc, void (*fn)(void), int argc, ...)
 {
 	int i, *sp;
 	va_list arg;
-	
+
 	va_start(arg, argc);
 	sp = (int*)uc->uc_stack.ss_sp+uc->uc_stack.ss_size/4;
 	for(i=0; i<4 && i<argc; i++)

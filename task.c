@@ -182,7 +182,7 @@ int
 taskyield(void)
 {
 	int n;
-	
+
 	n = tasknswitch;
 	taskready(taskrunning);
 	taskstate("yield");

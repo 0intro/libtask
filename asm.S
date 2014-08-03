@@ -131,7 +131,7 @@ GET:
 	movq	%rcx, 160(%rdi)
 	leaq	8(%rsp), %rcx	/* %rsp */
 	movq	%rcx, 184(%rdi)
-	
+
 	movq	32(%rdi), %rcx	/* restore %rcx */
 	movq	$0, %rax
 	ret
@@ -305,14 +305,14 @@ SET:
 	lw	$28, 120($4)	/* gp */
 	lw	$29, 124($4)	/* sp */
 	lw	$30, 128($4)	/* fp */
-	
+
 	/* 
 	 * If we set $31 directly and j $31, 
 	 * we would loose the outer return address.
 	 * Use a temporary register, then.
 	 */
 	lw	$8, 132($4)		/* ra */
-		
+
 	/*  bug: not setting the pc causes a bus error */
 	lw	$25, 132($4)	/* pc */
 
