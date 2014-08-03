@@ -28,6 +28,12 @@
 #endif
 #endif
 
+#if defined(__linux__) && defined(__amd64__)
+#define NEEDAMD64CONTEXT 1
+#define SET setmcontext
+#define GET getmcontext
+#endif
+
 #if defined(__linux__) && defined(__arm__)
 #define NEEDARMCONTEXT 1
 #define SET setmcontext

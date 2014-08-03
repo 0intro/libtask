@@ -25,6 +25,11 @@
 #define NEEDSWAPCONTEXT
 #endif
 
+#if defined(__linux__) && defined(__amd64__)
+#define NEEDSWAPCONTEXT
+#define NEEDAMD64MAKECONTEXT
+#endif
+
 #if defined(__linux__) && defined(__arm__)
 #define NEEDSWAPCONTEXT
 #define NEEDARMMAKECONTEXT
