@@ -3,6 +3,9 @@
 #include "taskimpl.h"
 #include <fcntl.h>
 #include <stdio.h>
+#ifdef USE_VALGRIND
+#include <valgrind.h>
+#endif
 
 int	taskdebuglevel;
 int	taskcount;
@@ -107,6 +110,10 @@ taskalloc(void (*fn)(void*), void *arg, uint stack)
 		abort();
 	}
 
+#ifdef USE_VALGRIND
+	t->vid = VALGRIND_STACK_REGISTER(t->stk+8, t->stk+8 + t->stksize-64);
+#endif
+
 	/* call makecontext to do the real work. */
 	/* leave a few words open on both ends */
 	t->context.uc.uc_stack.ss_sp = t->stk+8;
@@ -208,6 +215,9 @@ taskexit(int val)
 	taskexitval = val;
 	taskrunning->exiting = 1;
 	taskswitch();
+#ifdef USE_VALGRIND
+	VALGRIND_STACK_DEREGISTER(taskrunning->vid);
+#endif
 }
 
 static void

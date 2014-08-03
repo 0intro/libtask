@@ -21,6 +21,7 @@ $(OFILES): taskimpl.h task.h 386-ucontext.h power-ucontext.h ip.h
 AS=gcc -c
 CC=gcc
 CFLAGS=-Wall -Wextra -c -I. -ggdb
+#CFLAGS+=-DUSE_VALGRIND -I/usr/include/valgrind
 
 %.o: %.S
 	$(AS) $*.S

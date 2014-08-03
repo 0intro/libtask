@@ -179,6 +179,9 @@ struct Task
 	void	(*startfn)(void*);
 	void	*startarg;
 	void	*udata;
+#ifdef USE_VALGRIND
+	int	vid;
+#endif
 };
 
 void	taskready(Task*);
