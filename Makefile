@@ -14,7 +14,7 @@ OFILES=\
 	task.o\
 	ip.o\
 
-all: $(LIB) primes tcpproxy testdelay
+all: $(LIB) echo httpload primes tcpload tcpproxy testdelay
 
 $(OFILES): taskimpl.h task.h 386-ucontext.h power-ucontext.h ip.h
 
@@ -32,8 +32,14 @@ CFLAGS=-Wall -Wextra -c -I. -ggdb
 $(LIB): $(OFILES)
 	ar rvc $(LIB) $(OFILES)
 
+echo: echo.o $(LIB)
+	$(CC) -o echo echo.o $(LIB)
+
 primes: primes.o $(LIB)
 	$(CC) -o primes primes.o $(LIB)
+
+tcpload: tcpload.o $(LIB)
+	$(CC) -o tcpload tcpload.o $(LIB)
 
 tcpproxy: tcpproxy.o $(LIB)
 	$(CC) -o tcpproxy tcpproxy.o $(LIB) $(TCPLIBS)
@@ -48,7 +54,7 @@ testdelay1: testdelay1.o $(LIB)
 	$(CC) -o testdelay1 testdelay1.o $(LIB)
 
 clean:
-	rm -f *.o primes tcpproxy testdelay testdelay1 httpload $(LIB)
+	rm -f *.o echo primes tcpload tcpproxy httpload testdelay testdelay1 $(LIB)
 
 install: $(LIB)
 	cp $(LIB) /usr/local/lib
