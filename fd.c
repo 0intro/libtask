@@ -291,6 +291,22 @@ fdread(int fd, void *buf, int n)
 }
 
 int
+fdreadn(int fd, void *buf, int n)
+{
+	int m, tot;
+
+	for(tot=0; tot<n; tot+=m){
+		m = fdread(fd, (char*)buf+tot, n-tot);
+		if(m < 0)
+			return m;
+		if(m == 0)
+			break;
+	}
+
+	return tot;
+}
+
+int
 fdwrite(int fd, void *buf, int n)
 {
 	int m, tot;

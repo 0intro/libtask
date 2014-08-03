@@ -154,6 +154,7 @@ int		chansendul(Channel *c, unsigned long v);
  */
 int		fdread(int, void*, int);
 int		fdread1(int, void*, int);	/* always uses fdwait */
+int		fdreadn(int, void*, int);
 int		fdwrite(int, void*, int);
 void		fdwait(int, int);
 int		fdnoblock(int);

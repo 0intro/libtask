@@ -98,6 +98,11 @@ int fdread(int, void*, int);
 	Like regular read(), but puts task to sleep while waiting for
 	data instead of blocking the whole program.
 
+int fdreadn(int, void*, int);
+
+	Like fdread(), but does successive read calls until n bytes have
+	been read, or a read system call returns a non-positive count.
+
 int fdwrite(int, void*, int);
 
 	Like regular write(), but puts task to sleep while waiting to
