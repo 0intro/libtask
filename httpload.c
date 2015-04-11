@@ -42,6 +42,8 @@ fetchtask(void *v)
 	int fd, n;
 	char buf[512];
 
+	(void)v;
+
 	fprintf(stderr, "starting...\n");
 	for(;;){
 		if((fd = netdial(TCP, server, 80)) < 0){
