@@ -334,6 +334,7 @@ chanrecvp(Channel *c)
 {
 	void *v;
 
+	v = NULL;
 	_chanop(c, CHANRCV, (void*)&v, 1);
 	return v;
 }
@@ -349,6 +350,7 @@ channbrecvp(Channel *c)
 {
 	void *v;
 
+	v = NULL;
 	_chanop(c, CHANRCV, (void*)&v, 0);
 	return v;
 }
@@ -364,6 +366,7 @@ chanrecvul(Channel *c)
 {
 	ulong val;
 
+	val = 0;
 	_chanop(c, CHANRCV, &val, 1);
 	return val;
 }
@@ -379,6 +382,7 @@ channbrecvul(Channel *c)
 {
 	ulong val;
 
+	val = 0;
 	_chanop(c, CHANRCV, &val, 0);
 	return val;
 }
