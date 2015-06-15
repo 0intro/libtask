@@ -128,7 +128,14 @@ netlookup(char *name, unsigned char *ip)
 	/* BUG - Name resolution blocks.  Need a non-blocking DNS. */
 	taskstate("netlookup");
 	if((he = gethostbyname(name)) != 0){
-		ip = (unsigned char*)he->h_addr;
+		switch(he->h_addrtype) {
+		case AF_INET:
+			v4tov6(ip, (unsigned char*)he->h_addr);
+			break;
+		case AF_INET6:
+			memcpy(ip, (unsigned char*)he->h_addr, he->h_length);
+			break;
+		}
 		taskstate("netlookup succeeded");
 		return 0;
 	}else if(getaddrinfo(name, NULL, NULL, &result) == 0) {
