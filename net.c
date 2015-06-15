@@ -119,7 +119,6 @@ netaccept(int fd, char *server, int *port)
 int
 netlookup(char *name, unsigned char *ip)
 {
-	struct hostent *he;
 	struct addrinfo *result;
 
 	if(parseip(ip, name) == 0)
@@ -127,18 +126,7 @@ netlookup(char *name, unsigned char *ip)
 
 	/* BUG - Name resolution blocks.  Need a non-blocking DNS. */
 	taskstate("netlookup");
-	if((he = gethostbyname(name)) != 0){
-		switch(he->h_addrtype) {
-		case AF_INET:
-			v4tov6(ip, (unsigned char*)he->h_addr);
-			break;
-		case AF_INET6:
-			memcpy(ip, (unsigned char*)he->h_addr, he->h_length);
-			break;
-		}
-		taskstate("netlookup succeeded");
-		return 0;
-	}else if(getaddrinfo(name, NULL, NULL, &result) == 0) {
+	if(getaddrinfo(name, NULL, NULL, &result) == 0) {
 		switch (result->ai_family) {
 		case AF_INET:
 			v4tov6(ip, (unsigned char*)&((struct sockaddr_in*)result->ai_addr)->sin_addr.s_addr);
