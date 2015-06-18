@@ -57,6 +57,7 @@ taskmain(int argc, char **argv)
 			fprintf(stderr, "connection from %s:%d\n", remote, rport);
 		taskcreate(proxytask, (void*)(uintptr_t)cfd, STACK);
 	}
+	close(fd);
 }
 
 void
