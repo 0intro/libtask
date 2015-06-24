@@ -48,7 +48,10 @@ taskmain(int argc, char **argv)
 		fprintf(stderr, "cannot announce on tcp port %d: %s\n", atoi(argv[1]), strerror(errno));
 		taskexitall(1);
 	}
-	fdnoblock(fd);
+	if(fdnoblock(fd) < 0){
+		fprintf(stderr, "fdnoblock\n");
+		taskexitall(1);
+	}
 	while((cfd = netaccept(fd, remote, &rport)) >= 0){
 		if(verbose)
 			fprintf(stderr, "connection from %s:%d\n", remote, rport);

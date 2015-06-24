@@ -47,7 +47,6 @@ fetchtask(void *v)
 		}
 		snprintf(buf, sizeof buf, "xxxxxxxxxx");
 		fdwrite(fd, buf, strlen(buf));
-		fdread(fd, buf, sizeof buf);
 		close(fd);
 	}
 }

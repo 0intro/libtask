@@ -220,6 +220,8 @@ fdwait(int fd, int rw)
 	if(r < 0 || errno == EEXIST){
 		duped = 1;
 		fd = dup(fd);
+		if(fd < 0)
+			abort();
 		r = epoll_ctl(epfd, EPOLL_CTL_ADD, fd, &ev);
 		if(r != 0)
 			abort();

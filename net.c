@@ -62,7 +62,10 @@ netannounce(int istcp, char *server, int port)
 	sn = sizeof n;
 	if(istcp && getsockopt(fd, SOL_SOCKET, SO_TYPE, (void*)&n, &sn) >= 0){
 		n = 1;
-		setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char*)&n, sizeof n);
+		if(setsockopt(fd, SOL_SOCKET, SO_REUSEADDR, (char*)&n, sizeof n) < 0){
+			close(fd);
+			return -1;
+		}
 	}
 
 	if(bind(fd, (struct sockaddr*)&ss, sizeof ss) < 0){
@@ -74,7 +77,10 @@ netannounce(int istcp, char *server, int port)
 	if(proto == SOCK_STREAM)
 		listen(fd, 16);
 
-	fdnoblock(fd);
+	if(fdnoblock(fd) < 0){
+		close(fd);
+		return -1;
+	}
 	taskstate("netannounce succeeded");
 	return fd;
 }
@@ -109,9 +115,15 @@ netaccept(int fd, char *server, int *port)
 			*port = nhgets(&((struct sockaddr_in6*)&ss)->sin6_port);
 		break;
 	}
-	fdnoblock(cfd);
+	if(fdnoblock(cfd) < 0){
+		close(cfd);
+		return -1;
+	}
 	one = 1;
-	setsockopt(cfd, IPPROTO_TCP, TCP_NODELAY, (char*)&one, sizeof one);
+	if(setsockopt(cfd, IPPROTO_TCP, TCP_NODELAY, (char*)&one, sizeof one) < 0){
+		close(cfd);
+		return -1;
+	}
 	taskstate("netaccept succeeded");
 	return cfd;
 }
@@ -136,10 +148,12 @@ netlookup(char *name, unsigned char *ip)
 			break;
 		}
 		taskstate("netlookup succeeded");
+		freeaddrinfo(result);
 		return 0;
 	}
 
 	taskstate("netlookup failed");
+	freeaddrinfo(result);
 	return -1;
 }
 
@@ -160,12 +174,18 @@ netdial(int istcp, char *server, int port)
 		taskstate("socket failed");
 		return -1;
 	}
-	fdnoblock(fd);
+	if(fdnoblock(fd) < 0){
+		close(fd);
+		return -1;
+	}
 
 	/* for udp */
 	if(!istcp){
 		n = 1;
-		setsockopt(fd, SOL_SOCKET, SO_BROADCAST, &n, sizeof n);
+		if(setsockopt(fd, SOL_SOCKET, SO_BROADCAST, &n, sizeof n) < 0){
+			close(fd);
+			return -1;
+		}
 	}
 
 	/* start connecting */
@@ -198,7 +218,10 @@ netdial(int istcp, char *server, int port)
 
 	/* report error */
 	sn = sizeof n;
-	getsockopt(fd, SOL_SOCKET, SO_ERROR, (void*)&n, &sn);
+	if(getsockopt(fd, SOL_SOCKET, SO_ERROR, (void*)&n, &sn) < 0){
+		close(fd);
+		return -1;
+	}
 	if(n == 0)
 		n = ECONNREFUSED;
 	close(fd);

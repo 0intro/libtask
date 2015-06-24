@@ -46,7 +46,8 @@ taskdebug(char *fmt, ...)
 			p = argv0;
 		snprint(buf, sizeof buf, "/tmp/%s.tlog", p);
 		if((fd = open(buf, O_CREAT|O_WRONLY, 0666)) < 0)
-			fd = open("/dev/null", O_WRONLY);
+			if((fd = open("/dev/null", O_WRONLY)) < 0)
+				abort();
 	}
 
 	va_start(arg, fmt);
