@@ -53,9 +53,3 @@ emalloc(unsigned long n)
 {
 	return calloc(n ,1);
 }
-
-long
-lrand(void)
-{
-	return rand();
-}
