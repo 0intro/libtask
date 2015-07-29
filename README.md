@@ -1,3 +1,9 @@
+Libtask: a Coroutine Library for C and Unix
+===========================================
+
+[![Build Status](https://drone.io/github.com/0intro/libtask/status.png)](https://drone.io/github.com/0intro/libtask/latest)
+[![Coverity Scan Status](https://scan.coverity.com/projects/5467/badge.svg)](https://scan.coverity.com/projects/5467)
+
 Libtask is a simple coroutine library.  It runs on Linux (ARM, MIPS, and x86),
 FreeBSD (x86), OS X (PowerPC x86, and x86-64), and SunOS Solaris (Sparc),
 and is easy to port to other systems.
@@ -12,7 +18,8 @@ the CPU.  Most of the functions provided in task.h do have
 the possibility of going to sleep.  Programs using the task
 functions should #include <task.h>.
 
---- Basic task manipulation
+Basic task manipulation
+-----------------------
 
 int taskcreate(void (*f)(void *arg), void *arg, unsigned int stacksize);
 
@@ -23,7 +30,7 @@ void tasksystem(void);
 	Mark the current task as a "system" task.  These are ignored
 	for the purposes of deciding the program is done running
 	(see taskexit next).
-	
+
 void taskexit(int status);
 
 	Exit the current task.  If this is the last non-system task,
@@ -38,7 +45,7 @@ void taskmain(int argc, char *argv[]);
 	Write this function instead of main.  Libtask provides its own main.
 
 int taskyield(void);
-	
+
 	Explicitly give up the CPU.  The current task will be scheduled
 	again once all the other currently-ready tasks have a chance
 	to run.  Returns the number of other tasks that ran while the
@@ -65,16 +72,16 @@ void needstack(int n);
 void taskname(char*, ...);
 
 	Takes an argument list like printf.  Sets the current task's name.
-	
+
 char* taskgetname(void);
 
 	Returns the current task's name.  Is the actual buffer; do not free.
-	
+
 void taskstate(char*, ...);
 char* taskgetstate(void);
 
 	Like taskname and taskgetname but for the task state.
-	
+
 	When you send a tasked program a SIGQUIT (or SIGINFO, on BSD)
 	it will print a list of all its tasks and their names and states.
 	This is useful for debugging why your program isn't doing anything!
@@ -83,10 +90,11 @@ unsigned int taskid(void);
 
 	Return the unique task id for the current task.
 
---- Non-blocking I/O
+Non-blocking I/O
+----------------
 
 There is a small amount of runtime support for non-blocking I/O
-on file descriptors.  
+on file descriptors.
 
 int fdnoblock(int fd);
 
@@ -116,10 +124,11 @@ void fdwait(int fd, int rw);
 	anything else means just exceptional conditions (hang up, etc.)
 	The 'r' and 'w' also wake up for exceptional conditions.
 
---- Network I/O
+Network I/O
+-----------
 
 These are convenient packaging of the ugly Unix socket routines.
-They can all put the current task to sleep during the call.  
+They can all put the current task to sleep during the call.
 
 int netannounce(int proto, char *address, int port)
 
@@ -128,7 +137,7 @@ int netannounce(int proto, char *address, int port)
 	string version of a host name or IP address.  If address is null,
 	then announce binds to the given port on all available interfaces.
 	Returns a fd to use with netaccept.
-	Examples: netannounce(TCP, "localhost", 80) or 
+	Examples: netannounce(TCP, "localhost", 80) or
 		netannounce(TCP, "127.0.0.1", 80) or netannounce(TCP, 0, 80).
 
 int netaccept(int fd, char *server, int *port)
@@ -141,7 +150,7 @@ int netaccept(int fd, char *server, int *port)
 	Example:
 		char server[46];
 		int port;
-		
+
 		if(netaccept(fd, server, &port) >= 0)
 			printf("connect from %s:%d", server, port);
 
@@ -154,14 +163,16 @@ int netdial(int proto, char *name, int port)
 	Example: netdial(TCP, "www.google.com", 80)
 		or netdial(TCP, "18.26.4.9", 80)
 
---- Time
+Time
+----
 
 unsigned int taskdelay(unsigned int ms)
 
 	Put the current task to sleep for approximately ms milliseconds.
 	Return the actual amount of time slept, in milliseconds.
 
---- Example programs
+Example programs
+----------------
 
 In this directory, tcpproxy.c is a simple TCP proxy that illustrates
 most of the above.  You can run
@@ -175,16 +186,18 @@ Other examples are:
 	httpload.c - simple HTTP load generator
 	testdelay.c - test taskdelay()
 
---- Building
+Building
+--------
 
 To build, run make.  You can run make install to copy task.h and
 libtask.a to the appropriate places in /usr/local.  Then you
 should be able to just link with -ltask in your programs
-that use it.  
+that use it.
 
 On SunOS Solaris machines, run makesun instead of just make.
 
---- Contact Info
+Contact Info
+------------
 
 Please email me with questions or problems.
 
@@ -192,8 +205,8 @@ Russ Cox
 rsc@swtch.com
 
 
---- Stuff you probably won't use at first ---
---- but might want to know about eventually ---
+Stuff you probably won't use at first but might want to know about eventually
+-----------------------------------------------------------------------------
 
 void tasksleep(Rendez*);
 int taskwakeup(Rendez*);
@@ -203,7 +216,7 @@ int taskwakeupall(Rendez*);
 	just allocating memory for it (or putting it in another structure)
 	and then zeroing the memory.  Tasksleep(r) 'sleeps on r', giving
 	up the CPU.  Multiple tasks can sleep on a single Rendez.
-	When another task comes along and calls taskwakeup(r), 
+	When another task comes along and calls taskwakeup(r),
 	the first task sleeping on r (if any) will be woken up.
 	Taskwakeupall(r) wakes up all the tasks sleeping on r.
 	They both return the actual number of tasks awakened.
@@ -214,7 +227,7 @@ void qlock(QLock*);
 int canqlock(QLock*);
 void qunlock(QLock*);
 
-	You probably won't need locks because of the cooperative 
+	You probably won't need locks because of the cooperative
 	scheduling, but if you do, here are some.  You can make a new
 	QLock by just declaring it and zeroing the memory.
 	Calling qlock will give up the CPU if the lock is held by someone else.
@@ -233,7 +246,7 @@ void wunlock(RWLock*);
 	RWLocks are reader-writer locks.  Any number of readers
 	can lock them at once, but only one writer at a time.
 	If a writer is holding it, there can't be any readers.
-	
+
 
 Channel *chancreate(int, int);
 etc.
@@ -241,11 +254,9 @@ etc.
 	Channels are buffered communication pipes you can
 	use to send messages between tasks.  Some people like
 	doing most of the inter-task communication using channels.
-	
+
 	For details on channels see the description of channels in
 	http://swtch.com/usr/local/plan9/man/man3/thread.html and
 	http://swtch.com/~rsc/thread/
 	and also the example program primes.c, which implements
 	a concurrent prime sieve.
-
-
