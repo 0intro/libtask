@@ -1,7 +1,7 @@
 Libtask: a Coroutine Library for C and Unix
 ===========================================
 
-[![Build Status](https://travis-ci.org/0intro/libtask.svg?branch=master)](https://travis-ci.org/0intro/libtask)
+[![Build Status](https://github.com/0intro/libtask/workflows/C/badge.svg)](https://github.com/0intro/libtask/actions/workflows/c.yml)
 [![Coverity Scan Status](https://scan.coverity.com/projects/5467/badge.svg)](https://scan.coverity.com/projects/5467)
 
 Libtask is a simple coroutine library.  It runs on Linux (ARM, MIPS, and x86),
