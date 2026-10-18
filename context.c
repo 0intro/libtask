@@ -3,7 +3,10 @@
 #include "taskimpl.h"
 
 #if defined(__APPLE__)
-#if defined(__i386__)
+#if defined(__aarch64__) || defined(__arm64__)
+#define NEEDARM64MAKECONTEXT
+#define NEEDSWAPCONTEXT
+#elif defined(__i386__)
 #define NEEDX86MAKECONTEXT
 #define NEEDSWAPCONTEXT
 #elif defined(__x86_64__)
@@ -38,6 +41,37 @@
 #if defined(__linux__) && defined(__mips__)
 #define	NEEDSWAPCONTEXT
 #define	NEEDMIPSMAKECONTEXT
+#endif
+
+#ifdef NEEDARM64MAKECONTEXT
+
+void
+makecontext(ucontext_t *ucp, void (*func)(void), int argc, ...)
+{
+    uintptr_t sp;
+    va_list arg;
+
+    if(argc != 2){
+        fprint(2, "makecontext: expected 2 arguments\n");
+        abort();
+    }
+
+    sp = (uintptr_t)ucp->uc_stack.ss_sp
+        + ucp->uc_stack.ss_size;
+
+    sp &= ~(uintptr_t)0xF;
+
+    memset(&ucp->mc, 0, sizeof ucp->mc);
+
+    ucp->mc.sp = (ulong)sp;
+    ucp->mc.lr = (ulong)(uintptr_t)func;
+
+    va_start(arg, argc);
+    ucp->mc.x0 = va_arg(arg, uint);
+    ucp->mc.x1 = va_arg(arg, uint);
+    va_end(arg);
+}
+
 #endif
 
 #ifdef NEEDPOWERMAKECONTEXT

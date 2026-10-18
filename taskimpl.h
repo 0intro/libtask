@@ -127,6 +127,8 @@ extern	void		makecontext(ucontext_t*, void(*)(), int, ...);
 #		include "386-ucontext.h"
 #	elif defined(__x86_64__)
 #		include "amd64-ucontext.h"
+#	elif defined(__aarch64__) || defined (__arm64__)
+#		include "arm64-ucontext.h"
 #	else
 #		include "power-ucontext.h"
 #	endif

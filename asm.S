@@ -13,7 +13,11 @@
 #endif
 
 #if defined(__APPLE__)
-#if defined(__i386__)
+#if defined(__aarch64__) || defined(__arm64__)
+#define NEEDARM64CONTEXT 1
+#define SET __setmcontext
+#define GET __getmcontext
+#elif defined(__i386__)
 #define NEEDX86CONTEXT 1
 #define SET _setmcontext
 #define GET _getmcontext
@@ -44,6 +48,77 @@
 #define NEEDMIPSCONTEXT 1
 #define SET setmcontext
 #define GET getmcontext
+#endif
+
+#ifdef NEEDARM64CONTEXT
+
+.text
+.p2align 2
+
+.globl GET
+GET:
+    /* Save callee-saved general-purpose registers */
+    stp x19, x20, [x0, #0]
+    stp x21, x22, [x0, #16]
+    stp x23, x24, [x0, #32]
+    stp x25, x26, [x0, #48]
+    stp x27, x28, [x0, #64]
+
+    /* Save frame pointer and link register */
+    stp x29, x30, [x0, #80]
+
+    /* Save stack pointer */
+    mov x9, sp
+    str x9, [x0, #96]
+
+    /* Return 1 when this context is restored */
+    mov x9, #1
+    str x9, [x0, #104]
+    str x1, [x0, #112]
+
+    /* Save callee-saved floating-point registers */
+    stp d8, d9, [x0, #120]
+    stp d10, d11, [x0, #136]
+    stp d12, d13, [x0, #152]
+    stp d14, d15, [x0, #168]
+
+    /* First getcontext call returns 0 */
+    mov w0, #0
+    ret
+
+
+.globl SET
+SET:
+    /* x0 points to mcontext */
+    mov x9, x0
+
+    /* Restore general-purpose registers */
+    ldp x19, x20, [x9, #0]
+    ldp x21, x22, [x9, #16]
+    ldp x23, x24, [x9, #32]
+    ldp x25, x26, [x9, #48]
+    ldp x27, x28, [x9, #64]
+
+    /* Restore frame pointer and return address */
+    ldp x29, x30, [x9, #80]
+
+    /* Restore stack pointer */
+    ldr x10, [x9, #96]
+
+    /* Restore floating-point registers */
+    ldp d8, d9, [x9, #120]
+    ldp d10, d11, [x9, #136]
+    ldp d12, d13, [x9, #152]
+    ldp d14, d15, [x9, #168]
+
+    mov sp, x10
+
+    /* Restore return value / task arguments */
+    ldr x0, [x9, #104]
+    ldr x1, [x9, #112]
+
+    ret
+
 #endif
 
 #ifdef NEEDX86CONTEXT
